@@ -1,13 +1,13 @@
-param n >= 0;
+param m >= 0;
 /* number of agents */
 
-set I := 1..n;
+set I := 1..m;
 /* set of agents */
 
-param m >= 0;
+param n >= 0;
 /* number of tasks */
 
-set J := 1..m;
+set J := 1..n;
 /* set of tasks */
 
 param c{i in I, j in J}, integer, >= 0;
