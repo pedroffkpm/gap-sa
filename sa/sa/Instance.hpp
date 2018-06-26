@@ -17,12 +17,12 @@
 class Instance {
   
     //number of agents
-    unsigned agents;
+    unsigned numberOfAgents;
     //number of tasks
-    unsigned tasks;
+    unsigned numberOfTasks;
     
     //costs matrix as 1d vector, to be manually indexed
-    std::vector<unsigned> cost;
+    std::vector<unsigned> costs;
     
     //resources matrix as 1d vector, to be manually indexed
     std::vector<unsigned> requestedResources;
@@ -32,8 +32,8 @@ class Instance {
     
 public:
     Instance( unsigned agents, unsigned tasks, std::vector<unsigned> cost, std::vector<unsigned> requestedResource, std::vector<unsigned> availableResource );
-    unsigned getAgents();
-    unsigned getTasks();
+    unsigned getNumberOfAgents();
+    unsigned getNumberOfTasks();
     std::vector<unsigned> getCosts();
     std::vector<unsigned> getReqRes();
     std::vector<unsigned> getAvRes();

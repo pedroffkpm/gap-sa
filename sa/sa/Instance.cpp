@@ -8,24 +8,27 @@
 
 #include "Instance.hpp"
 
-Instance::Instance( unsigned agents, unsigned tasks, std::vector<unsigned> cost, std::vector<unsigned> requestedResources, std::vector<unsigned> availableResources):
-            agents(agents),
-            tasks(tasks),
-            cost(cost),
-            requestedResources(requestedResources),
-            availableResources(availableResources)
-            {}
+Instance::Instance(unsigned numberOfAgents,
+                   unsigned numberOfTasks,
+                   std::vector<unsigned> costs,
+                   std::vector<unsigned> requestedResources,
+                   std::vector<unsigned> availableResources):
+                numberOfAgents(numberOfAgents),
+                numberOfTasks(numberOfTasks),
+                costs(costs),
+                requestedResources(requestedResources),
+                availableResources(availableResources) {}
 
-unsigned Instance::getAgents() {
-    return this->agents;
+unsigned Instance::getNumberOfAgents() {
+    return this->numberOfAgents;
 }
 
-unsigned Instance::getTasks() {
-    return this->tasks;
+unsigned Instance::getNumberOfTasks() {
+    return this->numberOfTasks;
 }
 
 std::vector<unsigned> Instance::getCosts() {
-    return this->cost;
+    return this->costs;
 }
 
 std::vector<unsigned> Instance::getReqRes() {
