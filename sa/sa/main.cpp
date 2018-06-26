@@ -16,69 +16,75 @@
 #include "Solution.hpp"
 
 Instance parseInstance(std::string instancePath) {
+    
     /* number of agents */
     unsigned numberOfAgents;
-
-    /* number of tasks */
-    unsigned numberOfTasks;
-
-    unsigned tasks_size = numberOfAgents * numberOfTasks;
-
-    /*costs matrix as 1d vector, to be manually indexed */
-    std::vector<unsigned> cost;
-
-    /*resources matrix as 1d vector, to be manually indexed */
-    std::vector<unsigned> requestedResources;
-
-    /* available resources of each agent */
-    std::vector<unsigned> availableResources;
-
 
     std::string line;
     std::ifstream instanceFile(instancePath);
 
     /* parse number of agents */
     std::getline(instanceFile, line);
+    std::cout << line << "\n";
     std::istringstream ss(line);
     ss >> numberOfAgents;
+    std::cout << "numberofagents" << numberOfAgents << "\n";
+    
+    /* available resources of each agent */
+    std::vector<unsigned> agentLimit(numberOfAgents);
 
+    /* number of tasks */
+    unsigned numberOfTasks;
+    
     /* parse number of tasks */
     std::getline(instanceFile, line);
-    std::istringstream iss(line);
-    ss >> numberOfTasks;
-
+    std::istringstream ss2(line);
+    ss2 >> numberOfTasks;
+    std::cout << numberOfTasks << "\n";
+    
+    /*resources matrix as 1d vector, to be manually indexed */
+    std::vector<unsigned> taskResources(numberOfTasks);
+    
+    /*costs matrix as 1d vector, to be manually indexed */
+    std::vector<unsigned> cost(numberOfAgents*numberOfTasks);
+    
+    
+    
     /*parse costs*/
-    for (int i = 0; i < tasks_size; i++) {
-        unsigned aux;
-
+    unsigned aux;
+    std::cout << "\nkrl1\n";
+    
+    for (int i = 0; i < numberOfTasks*numberOfAgents; i++) {
+        std::cout << "\nkrl2\n";
         std::getline(instanceFile, line);
         std::istringstream ss(line);
         ss >> aux;
+        
+        std::cout << "aux =";
+        std::cout << aux << "\n";
 
         cost[i] = aux;
     }
     /*parse required resources*/
-     for (int i = 0; i < tasks_size; i++) {
-        unsigned aux;
+     for (int i = 0; i < numberOfTasks*numberOfAgents; i++) {
 
         std::getline(instanceFile, line);
         std::istringstream ss(line);
         ss >> aux;
 
-        requestedResources[i] = aux;
+        taskResources[i] = aux;
     }
     /* parse available resources per agent*/
    for (int i = 0; i < numberOfAgents; i++) {
-        unsigned aux;
 
         std::getline(instanceFile, line);
         std::istringstream ss(line);
         ss >> aux;
 
-        availableResources[i] = aux;
+        agentLimit[i] = aux;
     }
 
-    return Instance(numberOfAgents, numberOfTasks, cost, requestedResources, availableResources );
+    return Instance(numberOfAgents, numberOfTasks, cost, taskResources, agentLimit);
 }
 
 double setInitialTemp(Solution solution, Instance instance, double acceptanceProb) {
@@ -126,30 +132,34 @@ int main(int argc, const char * argv[]) {
     /* instance file path */
     const std::string instancePath(argv[1]);
     
-    Instance instance = parseInstance(instancePath);
-
     //instance file + seed + alpha + acceptanceProbability + numberOfIterations
+    
     
     unsigned seed;
     ss.str(argv[2]);
     ss >> seed;
+    std::cout << seed << "\n";
     ss.clear();
     std::srand(seed);
     
     double alpha;
     ss.str(argv[3]);
     ss >> alpha;
+    std::cout << alpha << "\n";
     ss.clear();
     
     double acceptanceProb;
     ss.str(argv[4]);
     ss >> acceptanceProb;
+    std::cout << acceptanceProb << "\n";
     ss.clear();
 
     unsigned steps;
     ss.str(argv[5]);
     ss >> steps;
     ss.clear();
+    
+    Instance instance = parseInstance(instancePath);
     
     auto initialTime = std::chrono::system_clock::now();
     
