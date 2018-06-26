@@ -11,13 +11,13 @@
 Instance::Instance(unsigned numberOfAgents,
                    unsigned numberOfTasks,
                    std::vector<unsigned> costs,
-                   std::vector<unsigned> requestedResources,
-                   std::vector<unsigned> availableResources):
+                   std::vector<unsigned> taskResource,
+                   std::vector<unsigned> agentLimit):
                 numberOfAgents(numberOfAgents),
                 numberOfTasks(numberOfTasks),
                 costs(costs),
-                requestedResources(requestedResources),
-                availableResources(availableResources) {}
+                taskResource(taskResource),
+                agentLimit(agentLimit) {}
 
 unsigned Instance::getNumberOfAgents() {
     return this->numberOfAgents;
@@ -31,10 +31,10 @@ std::vector<unsigned> Instance::getCosts() {
     return this->costs;
 }
 
-std::vector<unsigned> Instance::getReqRes() {
-    return this->requestedResources;
+std::vector<unsigned> Instance::getTaskResource() {
+    return this->taskResource;
 }
 
-std::vector<unsigned> Instance::getAvRes() {
-    return this->availableResources;
+std::vector<unsigned> Instance::getAgentLimit() {
+    return this->agentLimit;
 }

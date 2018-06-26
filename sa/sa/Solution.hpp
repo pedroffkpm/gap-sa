@@ -21,13 +21,13 @@
 class Solution {
     
     std::vector<unsigned> tasks; //vector of size |tasks|, in which will be represented the agents assigned to each task
-    std::vector<unsigned> limits; //vector of size |agents|, in which the limits for resources are represented
+    std::vector<unsigned> costs; //vector of size |tasks|*|agents|, represents costs
     
 public:
     //create feasible initial solution
     Solution(Instance instance);
     
-    //create feasible neighbour
+    //create new Solution from neighbour
     Solution(Instance instance, Solution solution);
     
     bool isFeasible(Instance instance);
@@ -35,7 +35,9 @@ public:
     int getMinIndex(std::vector<unsigned> &vector);
     
     std::vector<unsigned> getTasks();
+    std::vector<unsigned> getCosts();
     
-    std::vector<unsigned> getLimits();
+    int getTotalCost();
+    double calculateUnfitness(Instance instance);
     
 };

@@ -12,17 +12,17 @@
 #include <sstream>
 #include <string>
 #include <vector>
-//#include "solution.h"
-#include "instance.hpp"
+#include <cmath>
+#include "Solution.hpp"
 
 Instance parseInstance(std::string instancePath) {
     /* number of agents */
-    unsigned agents;
+    unsigned numberOfAgents;
 
     /* number of tasks */
-    unsigned tasks;
+    unsigned numberOfTasks;
 
-    unsigned tasks_size = agents * tasks;
+    unsigned tasks_size = numberOfAgents * numberOfTasks;
 
     /*costs matrix as 1d vector, to be manually indexed */
     std::vector<unsigned> cost;
@@ -40,12 +40,12 @@ Instance parseInstance(std::string instancePath) {
     /* parse number of agents */
     std::getline(instanceFile, line);
     std::istringstream ss(line);
-    ss >> agents;
+    ss >> numberOfAgents;
 
     /* parse number of tasks */
     std::getline(instanceFile, line);
     std::istringstream iss(line);
-    ss >> tasks;
+    ss >> numberOfTasks;
 
     /*parse costs*/
     for (int i = 0; i < tasks_size; i++) {
@@ -68,8 +68,8 @@ Instance parseInstance(std::string instancePath) {
         requestedResources[i] = aux;
     }
     /* parse available resources per agent*/
-   for (int i = 0; i < agents; i++) {
-        unsigned aux1;
+   for (int i = 0; i < numberOfAgents; i++) {
+        unsigned aux;
 
         std::getline(instanceFile, line);
         std::istringstream ss(line);
@@ -78,17 +78,89 @@ Instance parseInstance(std::string instancePath) {
         availableResources[i] = aux;
     }
 
-    return Instance(agents, tasks, cost, requestedResource, availableResource );
+    return Instance(numberOfAgents, numberOfTasks, cost, requestedResources, availableResources );
+}
+
+double setInitialTemp(Solution solution, Instance instance, double acceptanceProb) {
+    int deltaSum = 0;
+    
+    for (unsigned i = 0; i < 1000; i++) {
+        Solution newSolution(instance, solution);
+        deltaSum += std::abs(newSolution.getTotalCost() - solution.getTotalCost());
+    }
+    return (deltaSum/1000) / std::log(1/acceptanceProb);
+}
+
+Solution simulatedAnnealing(Instance instance, double alpha, double acceptanceProb, unsigned steps) {
+    Solution current(instance);
+    std::cout << current.getTotalCost() << ", ";
+    Solution best = current;
+    
+    double temperature = setInitialTemp(current, instance, acceptanceProb);
+    
+    for (int k =0; k < steps; k++) {
+        
+        Solution newSolution(instance, current);
+        double u = std::rand() / RAND_MAX; //random between 0 and 1
+        int deltaCost = newSolution.getTotalCost() - current.getTotalCost() + newSolution.calculateUnfitness(instance);
+        
+        if (deltaCost < 0 || u < std::exp(-deltaCost/temperature)) {
+            current = newSolution;
+        }
+        
+        if (current.isFeasible(instance) && current.getTotalCost() < best.getTotalCost()) {
+            best = current;
+        }
+        
+        temperature *= alpha;
+    }
+    
+    return best;
 }
 
 
-
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+    
+    std::istringstream ss;
+
     /* instance file path */
     const std::string instancePath(argv[1]);
-
+    
     Instance instance = parseInstance(instancePath);
-    return 0;
+
+    //instance file + seed + alpha + acceptanceProbability + numberOfIterations
+    
+    unsigned seed;
+    ss.str(argv[2]);
+    ss >> seed;
+    ss.clear();
+    std::srand(seed);
+    
+    double alpha;
+    ss.str(argv[3]);
+    ss >> alpha;
+    ss.clear();
+    
+    double acceptanceProb;
+    ss.str(argv[4]);
+    ss >> acceptanceProb;
+    ss.clear();
+
+    unsigned steps;
+    ss.str(argv[5]);
+    ss >> steps;
+    ss.clear();
+    
+    auto initialTime = std::chrono::system_clock::now();
+    
+    Solution solution = simulatedAnnealing(instance, alpha, acceptanceProb, steps);
+    
+    auto endTime = std::chrono::system_clock::now();
+    
+    auto time = endTime - initialTime;
+    auto seconds = std::chrono::duration_cast<std::chrono::duration<double>>(time);
+    
+    std::cout << seconds.count() << ", ";
+    
+        return 0;
 }
