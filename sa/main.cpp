@@ -113,24 +113,25 @@ Solution simulatedAnnealing(Instance instance, double alpha, double acceptancePr
     std::cout << current.getTotalCost() << ", ";
     Solution best = current;
     
-    double temperature = setInitialTemp(current, instance, acceptanceProb);
+    double temperature = 70;
     
     for (int k =0; k < steps; k++) {
-        
         Solution newSolution(instance, current);
-        double u = std::rand() / RAND_MAX; //random between 0 and 1
+        double u = double(std::rand()) / double(RAND_MAX); //random between 0 and 1
 
-        int deltaCost = newSolution.getTotalCost() - current.getTotalCost() + newSolution.calculateUnfitness(instance);
+        double deltaCost = newSolution.getTotalCost() - current.getTotalCost() + newSolution.calculateUnfitness(instance);
+
+        double e = double(-deltaCost)/double(temperature);
         
-        if (deltaCost < 0 || u < std::exp(-deltaCost/temperature)) {
+        if (deltaCost < 0.0 || u < std::exp(e)) {
             current = newSolution;
         }
         
-        if (current.isFeasible(instance) && current.getTotalCost() < best.getTotalCost()) {
+        if (current.getTotalCost() <= best.getTotalCost()) {
             best = current;
         }
         
-        temperature *= alpha;
+        temperature = temperature * alpha;
     }
     
     return best;

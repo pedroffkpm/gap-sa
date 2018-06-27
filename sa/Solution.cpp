@@ -105,16 +105,17 @@ double Solution::calculateUnfitness(Instance instance) {
     
     std::vector<unsigned> aux(instance.getNumberOfAgents(), 0);
     std::vector<unsigned> resources = instance.getTaskResource();
+    std::vector<unsigned> limits = instance.getAgentLimit();
 
-    
-    for (unsigned i = 0; i < instance.getNumberOfTasks(); i++) {
-        unsigned agent = tasks[i];
-        
+    for (int i = 0; i < instance.getNumberOfTasks(); i++) {
+        int agent = tasks[i];
         aux[agent] += resources[(instance.getNumberOfTasks() * agent) + i];
     }
     
-    for (unsigned i = 0; i < instance.getNumberOfAgents(); i++) {
-        unfitness += *std::max_element(aux.begin(), aux.end());
+    for (int i = 0; i < instance.getNumberOfAgents(); i++) {
+        
+        double diff = double(aux[i]) - double(limits[i]);
+        unfitness += std::max(double(0), diff);
     }
     
     return unfitness;
