@@ -10,47 +10,38 @@
 
 Solution::Solution(Instance instance)
 : tasks(instance.getNumberOfTasks()), //array of size |tasks|
-  costs(instance.getCosts())
+costs(instance.getCosts())
 {
     
     unsigned numberOfTasks = instance.getNumberOfTasks();
     unsigned numberOfAgents = instance.getNumberOfAgents();
     //try to generate feasible initial solution
-    //feasible solution is attribute task to the agent with minimal resource consumption
-    //and it being less than his resource limit
+    //best-effort solution is to attribute task to the agent with minimal resource consumption
     
     std::vector<unsigned> resources = instance.getTaskResource();
     std::vector<unsigned> limits = instance.getAgentLimit();
     std::vector<unsigned> aux(numberOfAgents); //vai guardar os recursos necessarios indexados por agente
     int minIndex;
-	
-	  
-
+    
+    
     for(unsigned i = 0; i < numberOfTasks; i++) {
         for(unsigned j = 0; j < numberOfAgents; j++) {
             aux[j] = resources[(numberOfTasks * j) + i]; //seleciona "coluna" da tarefa i
         }
         
         minIndex = getMinIndex(aux); //indice do agente que tem o menor recurso
-        
-        
-        //verifica se ele passa do limite; se passa o minIndex tem que ser outro que n passe
-        
-       
-                this->tasks[i] = minIndex; //esse agente vira o dessa task
-                
-       
-                }
-            }
+        this->tasks[i] = minIndex; //esse agente vira o dessa task
+    }
+}
 
 
 Solution::Solution(Instance instance, Solution solution) {
     //Randomly change assignees of three randomly chosen jobs
     tasks = solution.getTasks();
     costs = solution.getCosts();
-   
     
-    for (unsigned i = 0; i < 3; i++) {
+    
+    for (int i = 0; i < 3; i++) {
         //choose random job & agent
         unsigned job = std::rand() % instance.getNumberOfTasks();
         unsigned agent = std::rand() % instance.getNumberOfAgents();
@@ -72,7 +63,7 @@ int Solution::getTotalCost() {
     
     int aux = 0;
     int numberOfTasks = this->tasks.size();
-	
+    
     //iterar pelas tarefas; pegar o agente => acessar custo => somar
     for (int i = 0; i < numberOfTasks; i++) {
         
@@ -89,7 +80,7 @@ double Solution::calculateUnfitness(Instance instance) {
     std::vector<unsigned> aux(instance.getNumberOfAgents(), 0);
     std::vector<unsigned> resources = instance.getTaskResource();
     std::vector<unsigned> limits = instance.getAgentLimit();
-
+    
     for (int i = 0; i < instance.getNumberOfTasks(); i++) {
         int agent = tasks[i];
         aux[agent] += resources[(instance.getNumberOfTasks() * agent) + i];
