@@ -60,23 +60,6 @@ Solution::Solution(Instance instance, Solution solution) {
     
 }
 
-bool Solution::isFeasible(Instance instance) {
-    unsigned aux = 0;
-    
-    std::vector<unsigned> resources = instance.getTaskResource();
-    
-    for (unsigned i = 0; i < instance.getNumberOfAgents(); i++) {
-        for (unsigned j = 0; j < instance.getNumberOfTasks(); j++) {
-            aux += resources[(instance.getNumberOfTasks() * i) + j]; //soma todos os recursos do agente i
-        }
-        if (aux > instance.getAgentLimit()[i]) { //se a soma dos resources pra o agente i passa do disponível pra ele
-            return false;
-        }
-    }
-    
-    return true;
-}
-
 std::vector<unsigned> Solution::getTasks() {
     return this->tasks;
 }

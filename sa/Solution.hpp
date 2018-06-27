@@ -30,8 +30,6 @@ public:
     //create new Solution from neighbour
     Solution(Instance instance, Solution solution);
     
-    bool isFeasible(Instance instance);
-    
     int getMinIndex(std::vector<unsigned> &vector);
     
     std::vector<unsigned> getTasks();
